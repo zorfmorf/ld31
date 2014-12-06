@@ -1,6 +1,7 @@
 
 local lander = love.graphics.newImage("res/lander.png")
 local solar = love.graphics.newImage("res/lander_solar.png")
+local auspex = love.graphics.newImage("res/lander_auspex.png")
 
 Lander = Class {
     init = function(self, x, y)
@@ -46,6 +47,11 @@ function Lander:finishWork()
         self.solar = nil
     end
     
+    if self.auspex then
+        auspex_built = true
+        self.auspex = nil
+    end
+    
     dayHandler.free()
     return false
 end
@@ -57,6 +63,12 @@ function Lander:action(button)
         probe:register(self)
         self.solar = true
         stat.minerals = stat.minerals - 2
+    end
+    
+    if button == "auspex" and dayHandler.lock() then
+        probe:register(self)
+        self.auspex = true
+        stat.minerals = stat.minerals - 3
     end
         
     -- if probe has mineral deliver it
@@ -73,6 +85,9 @@ function Lander:draw(scale)
     love.graphics.draw(lander, self.x * scale.tw, self.y * scale.th, 0, scale.x * 0.4, scale.y * 0.4, (lander:getWidth() / 2.5), (lander:getHeight() / 1.5))
     if solar_panel_extended then
         love.graphics.draw(solar, self.x * scale.tw, self.y * scale.th, 0, scale.x * 0.4, scale.y * 0.4, (solar:getWidth() / 2.5), (solar:getHeight() / 1.5))
+    end
+    if auspex_built then
+        love.graphics.draw(auspex, self.x * scale.tw, self.y * scale.th, 0, scale.x * 0.4, scale.y * 0.4, (auspex:getWidth() / 2.5), (auspex:getHeight() / 1.5))
     end
     
     -- draw hover texts

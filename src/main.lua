@@ -16,6 +16,7 @@ require "class.mineral"
 require "class.task"
 require "class.effect"
 require "class.solarpanel"
+require "class.asteroid"
 
 -- load misc
 require "misc.taskhandler"

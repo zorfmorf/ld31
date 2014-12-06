@@ -57,7 +57,7 @@ local function cycleEntities(action)
     end
 end
 
-local function addEntity(entity)
+function addEntity(entity)
     
     if not tilegrid then
         tilegrid = {}
@@ -67,6 +67,19 @@ local function addEntity(entity)
                 tilegrid[i][j] = j > 3
             end
         end
+    end
+    
+    if entity.destroys then
+        for i,cand in pairs(entities) do
+            if entity.x == cand.x and entity.y == cand.y then
+                table.remove(entities, i)
+                table.insert(entities, entity)
+                return
+            end
+            tilegrid[entity.x][entity.y] = false
+        end
+        table.insert(entities, entity)
+        return
     end
     
     if tilegrid[entity.x] and tilegrid[entity.x][entity.y] then
@@ -107,6 +120,7 @@ function state_ingame:enter()
     addEntity(probe)
     addEntity(Mineral(2, 5, "mineral_blue"))
     addEntity(Mineral(22, 13, "mineral_orange"))
+    addEntity(Mineral(12, 11, "mineral_brown"))
     
     -- sort entities by y value
     table.sort(entities, function(a,b) return a.y < b.y end)
@@ -126,6 +140,7 @@ function state_ingame:enter()
     show_menu = false
     research_enabled = false
     solar_panel_extended = false
+    auspex_built = false
     allow_solarpanels = false
     buildmode = nil
 end
@@ -148,6 +163,11 @@ function state_ingame:update(dt)
         if not solar_panel_extended and stat.minerals >= 2 and not lander.solar then 
             if gui.Button{text="Solar Array"} then
                 lander:action("solar")
+            end
+        end
+        if not auspex_built and stat.minerals >= 3 and stat.science > 10 and not lander.auspex then 
+            if gui.Button{text="Auspex"} then
+                lander:action("auspex")
             end
         end
         if allow_solarpanels and stat.minerals >= 3 then

@@ -5,7 +5,7 @@ local tasks = nil
 
 function taskHandler.init()
     tasks = {}
-    tasks[1] = Task("Build base for colonists", 
+    tasks[1] = Task("Send as much science as you can find", 
                     "Get a sample from one of the crystals",
                     function()  end,
                     function()  end)

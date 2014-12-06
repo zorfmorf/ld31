@@ -1,5 +1,6 @@
 local mineral_orange = love.graphics.newImage("res/mineral_orange.png")
 local mineral_blue = love.graphics.newImage("res/mineral_blue.png")
+local mineral_brown = love.graphics.newImage("res/mineral_brown.png")
 local arrow = love.graphics.newImage("res/arrow.png")
 
 Mineral = Class {
@@ -35,6 +36,7 @@ end
 function Mineral:draw(scale)
     local img = mineral_blue
     if self.typ == "mineral_orange" then img = mineral_orange end
+    if self.typ == "mineral_brown" then img = mineral_brown end
     
     -- if selected draw infobox
     if self.selected then

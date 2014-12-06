@@ -13,6 +13,8 @@ local function defineRessources()
     samples = {}
     samples.mineral_orange = table.remove(effects, math.random(1, #effects))
     samples.mineral_blue = table.remove(effects, math.random(1, #effects))
+    samples.mineral_brown = table.remove(effects, math.random(1, #effects))
+    samples.asteroid = Effect(6, 1, function(effect) effect.mineral = 4 end)
 end
 
 function dayHandler.init()
@@ -42,5 +44,14 @@ function dayHandler.finish()
     stat.energy = stat.energy + stat.energypd
     if stat.energy < 0 then
         Gamestate.switch(state_gameover)
+    end
+    
+    -- handle asteroids
+    if math.random(100) + math.min(stat.day, 70) > 80 then
+        local x = math.random(0,30)
+        local y = math.random(2,15)
+        if not (x == lander.x and y == lander.y) then
+            addEntity(Asteroid(x, y))
+        end
     end
 end
