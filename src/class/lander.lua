@@ -60,25 +60,9 @@ end
 function Lander:draw(scale)
     local img = img0
     
-    -- draw action preview
-    if self.selected and not probe.sample then
-        love.graphics.setColor(color.white)
-        love.graphics.rectangle("fill", self.x * scale.tw + 60, self.y * scale.th - 75, 100, 100)
-        love.graphics.setColor(color.black)
-        love.graphics.rectangle("line", self.x * scale.tw + 60, self.y * scale.th - 75, 100, 100)
-        
-        love.graphics.setColor(color.white)
-        love.graphics.draw(icon_mousel, self.x * scale.tw + 60, self.y * scale.th - 75, 0, scale.x * 0.3, scale.y * 0.3)
-        love.graphics.draw(icon_mouser, self.x * scale.tw + 60, self.y * scale.th - 25, 0, scale.x * 0.3, scale.y * 0.3)
-        love.graphics.setFont(signfont2)
-        love.graphics.setColor(color.black)
-        love.graphics.print("Research", self.x * scale.tw + 100, self.y * scale.th - 75)
-        love.graphics.print("Build", self.x * scale.tw + 100, self.y * scale.th - 25)
-    end
-    
     -- draw lander
     love.graphics.setColor(color.white)    
-    if self.selected then love.graphics.setColor(color.selected) end
+    if self.selected and probe.sample then love.graphics.setColor(color.selected) end
     love.graphics.draw(img, self.x * scale.tw, self.y * scale.th, 0, scale.x * 0.4, scale.y * 0.4, (img:getWidth() / 2.5), (img:getHeight() / 1.5))
     love.graphics.setFont(landerfont)
     for i,line in ipairs(self.texts) do

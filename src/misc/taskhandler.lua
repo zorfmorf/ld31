@@ -11,8 +11,11 @@ function taskHandler.init()
                     function()  end)
     tasks[2] = Task("Acquire crystal sample", 
                     "Get a sample from one of the crystals",
-                    function() return probe.sample end,
-                    function() taskHandler.activate(3) end)
+                    function() return probe.sample  end,
+                    function() 
+                        taskHandler.activate(3) 
+                        research_enabled = true
+                    end)
     tasks[3] = Task("Do science on sample", 
                     "Analyze a crystal sample in the lander",
                     function() return #lander.samples > 0 end,

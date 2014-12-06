@@ -93,6 +93,9 @@ function state_ingame:enter()
         energypd = 0,
         day = 1
     }
+    
+    show_menu = false
+    research_enabled = true
 end
 
 
@@ -106,6 +109,42 @@ function state_ingame:update(dt)
     table.sort(entities, function(a,b) return a.y < b.y end)
     
     taskHandler.update(dt)
+    
+    -- research bar
+    if research_enabled then
+        gui.group.push{grow = "down", pos = {screen.w / 2 - 160, 0}}
+        
+        if gui.Button{ text = "Lander Action"} then
+            show_menu = not show_menu
+        end
+        
+        -- level 1 research
+        if show_menu then
+            
+            local research = dayHandler.getResearch()
+            for i,row in ipairs(research) do
+                gui.group.push{grow = "right", pos = {-75, 0}}
+                
+                for j,entry in ipairs(row) do
+                    if gui.Button{ id=entry.id, text = entry.name} then
+                        -- research action
+                    end
+                end
+                
+                gui.group.pop{}
+            end
+            gui.group.pop{}
+            
+            local mx, my = love.mouse.getPosition()
+            for i,row in ipairs(research) do
+                for j,entry in ipairs(row) do
+                    if gui.mouse.isHot(entry.id) then
+                        gui.Label{text = entry.desc, pos = {mx + 10,my - 20}}
+                    end
+                end
+            end
+        end
+    end
 end
 
 local function drawHud()
@@ -128,8 +167,6 @@ local function drawHud()
     end
     if DEBUG then love.graphics.print("FPS: "..love.timer.getFPS(), 5, 20 + font:getHeight() * 3) end
     
-    love.graphics.print("All Graphics are placeholders!", 300, 20)
-    
     love.graphics.print("Day "..stat.day, screen.w - 300, 5)
     local list = taskHandler.getTasklist()
     for i,task in pairs(list) do
@@ -137,6 +174,8 @@ local function drawHud()
         if task.finished then line = "[x] "..line else line = "[  ] "..line end
         love.graphics.print(line, screen.w - 300, i * font:getHeight() + 10)
     end
+    
+    gui.core.draw()
 end
 
 

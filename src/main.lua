@@ -3,6 +3,7 @@
 Gamestate = require "lib.hump.gamestate"
 Class = require "lib.hump.class"
 Vector = require "lib.vector"
+gui = require "lib.quickie"
 
 -- load states
 require "state.ingame"
@@ -14,6 +15,7 @@ require "class.probe"
 require "class.mineral"
 require "class.task"
 require "class.effect"
+require "class.research"
 
 -- load misc
 require "misc.taskhandler"
@@ -38,6 +40,11 @@ function love.load()
     icon_mouser = love.graphics.newImage("res/icon_mouser.png")
     
     math.randomseed(os.time())
+    
+    -- gui setup defaults
+    gui.group.default.size[1] = 150
+    gui.group.default.size[2] = 25
+    gui.group.default.spacing = 10
 end
 
 
