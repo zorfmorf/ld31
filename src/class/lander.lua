@@ -17,7 +17,8 @@ end
 
 -- on click event
 function Lander:action()
-    
+    probe:register(self)
+    self.active = true
 end
 
 function Lander:draw(scale)

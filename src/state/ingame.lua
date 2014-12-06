@@ -47,7 +47,7 @@ local function cycleEntities(action)
             end
         end
         
-        if entity.x == x and entity.y == y then 
+        if math.floor(entity.x + 0.5) == x and math.floor(entity.y + 0.5) == y then 
             if action then 
                 entity:action()
             else
@@ -78,6 +78,9 @@ function state_ingame:enter()
     table.insert(entities, Mineral(2, 5, 1))
     table.insert(entities, Mineral(26, 6, 1))
     table.insert(entities, Mineral(22, 13, 2))
+    
+    -- sort entities by y value
+    table.sort(entities, function(a,b) return a.y < b.y end)
 end
 
 
@@ -87,6 +90,8 @@ function state_ingame:update(dt)
     for i,entity in pairs(entities) do
         entity:update(dt)
     end
+    -- sort entities by y value
+    table.sort(entities, function(a,b) return a.y < b.y end)
 end
 
 
@@ -103,9 +108,6 @@ function state_ingame:draw()
             --love.graphics.rectangle("line", i * scale.tw, j * scale.th, scale.tw, scale.th)
         end
     end
-    
-    -- sort entities by y value
-    table.sort(entities, function(a,b) return a.y < b.y end)
     
     love.graphics.setColor(color.white)
     for i,entity in pairs(entities) do
