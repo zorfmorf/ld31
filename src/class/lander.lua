@@ -1,6 +1,6 @@
 
-local img0 = love.graphics.newImage("res/lander0.png")
-local img1 = love.graphics.newImage("res/lander1.png")
+local lander = love.graphics.newImage("res/lander.png")
+local solar = love.graphics.newImage("res/lander_solar.png")
 
 Lander = Class {
     init = function(self, x, y)
@@ -9,7 +9,7 @@ Lander = Class {
         self.selected = false
         self.lander = true
         self.samples = {}
-        self.work = 2
+        self.work = 3
         self.texts = {}
     end
 }
@@ -39,6 +39,12 @@ function Lander:finishWork()
         dayHandler.free()
         return true
     end
+        
+    if self.solar then
+        solar_panel_extended = true
+        stat.energypd = stat.energypd + 1
+        self.solar = nil
+    end
     
     dayHandler.free()
     return false
@@ -46,27 +52,33 @@ end
 
 -- on click event
 function Lander:action(button)
+    
+    if button == "solar" and dayHandler.lock() then
+        probe:register(self)
+        self.solar = true
+        stat.minerals = stat.minerals - 2
+    end
         
     -- if probe has mineral deliver it
     if probe.sample and dayHandler.lock() then
         probe:register(self)
-        self.active = true
-    else
-       -- if probe doesnt have sample, execute click event 
-        
     end
 end
 
 function Lander:draw(scale)
-    local img = img0
     
     -- draw lander
     love.graphics.setColor(color.white)    
     if self.selected and probe.sample then love.graphics.setColor(color.selected) end
-    love.graphics.draw(img, self.x * scale.tw, self.y * scale.th, 0, scale.x * 0.4, scale.y * 0.4, (img:getWidth() / 2.5), (img:getHeight() / 1.5))
+    love.graphics.draw(lander, self.x * scale.tw, self.y * scale.th, 0, scale.x * 0.4, scale.y * 0.4, (lander:getWidth() / 2.5), (lander:getHeight() / 1.5))
+    if solar_panel_extended then
+        love.graphics.draw(solar, self.x * scale.tw, self.y * scale.th, 0, scale.x * 0.4, scale.y * 0.4, (solar:getWidth() / 2.5), (solar:getHeight() / 1.5))
+    end
+    
+    -- draw hover texts
     love.graphics.setFont(landerfont)
     for i,line in ipairs(self.texts) do
         love.graphics.setColor(0, 0, 0, math.max(0, 255 - line[2] * 100))
-        love.graphics.print(line[1], self.x * scale.tw, self.y * scale.th - line[2] * 5 - i * font:getHeight(), 0, scale.x * 0.4, scale.y * 0.4, img:getWidth() / 4, img:getHeight() / 1.5)
+        love.graphics.print(line[1], self.x * scale.tw, self.y * scale.th - line[2] * 5 - i * font:getHeight(), 0, scale.x * 0.4, scale.y * 0.4, lander:getWidth() / 4, lander:getHeight() / 1.5)
     end
 end

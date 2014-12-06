@@ -1,7 +1,6 @@
 
 Effect = Class {
-    init = function(self, name, science, mineral, research)
-        self.name = name
+    init = function(self, science, mineral, research)
         self.science = science -- one time
         self.mineral = mineral -- every time its processed
         self.sampled = false

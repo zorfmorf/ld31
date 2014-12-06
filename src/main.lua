@@ -15,7 +15,7 @@ require "class.probe"
 require "class.mineral"
 require "class.task"
 require "class.effect"
-require "class.research"
+require "class.solarpanel"
 
 -- load misc
 require "misc.taskhandler"
@@ -38,6 +38,8 @@ function love.load()
     icon_energy = love.graphics.newImage("res/icon_energy.png")
     icon_mousel = love.graphics.newImage("res/icon_mousel.png")
     icon_mouser = love.graphics.newImage("res/icon_mouser.png")
+    
+    tobuild = love.graphics.newImage("res/tobuild.png")
     
     math.randomseed(os.time())
     

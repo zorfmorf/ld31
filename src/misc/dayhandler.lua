@@ -4,18 +4,11 @@ dayHandler = {}
 local lock = false
 local samples = nil
 
-local research = {}
-
-research[1] = {
-        Research("solar", "Solar array", "Extend solar array"),
-        Research("gelonium", "Res. Gelonium", "+1 Mineral from Gelonium sources"),  
-        Research("glazium", "Res. Glazium", "+1 Mineral from Gelonium sources"),
-    }
-
 local function defineRessources()
     local effects = {}
-    effects[1] = Effect("Gelonium", 10, 1, function(effect) effect.mineral = 2 research_gelonium = true end)
-    effects[2] = Effect("Glazium", 5, 2, function(effect) effect.mineral = 3  research_glazium = true  end)
+    effects[1] = Effect(10, 1, function(effect) effect.mineral = 2 end)
+    effects[2] = Effect(5, 2, function(effect) effect.mineral = 3 end)
+    effects[3] = Effect(2, 3, function(effect) effect.mineral = 4 end)
     
     samples = {}
     samples.mineral_orange = table.remove(effects, math.random(1, #effects))
@@ -50,8 +43,4 @@ function dayHandler.finish()
     if stat.energy < 0 then
         Gamestate.switch(state_gameover)
     end
-end
-
-function dayHandler.getResearch()
-    return research
 end

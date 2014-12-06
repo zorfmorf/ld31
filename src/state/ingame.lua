@@ -57,6 +57,35 @@ local function cycleEntities(action)
     end
 end
 
+local function addEntity(entity)
+    
+    if not tilegrid then
+        tilegrid = {}
+        for i=0,30 do
+            tilegrid[i] = {}
+            for j=0,15 do
+                tilegrid[i][j] = j > 3
+            end
+        end
+    end
+    
+    if tilegrid[entity.x] and tilegrid[entity.x][entity.y] then
+        table.insert(entities, entity)
+        tilegrid[entity.x][entity.y] = false
+        if entity.lander then
+            for k=-2,1 do
+                for l=-2,1 do
+                    if tilegrid[entity.x+k] and tilegrid[entity.x+k][entity.y+l] then
+                        tilegrid[entity.x+k][entity.y+l] = false
+                    end
+                end
+            end
+        end
+        return true
+    end
+    return false
+end
+
 
 function state_ingame:enter()
     bkg = love.graphics.newImage("res/bkg.png")
@@ -74,10 +103,10 @@ function state_ingame:enter()
     probe = Probe(10, 5)
     
     entities = {}
-    table.insert(entities, lander)
-    table.insert(entities, probe)
-    table.insert(entities, Mineral(2, 5, "mineral_blue"))
-    table.insert(entities, Mineral(22, 13, "mineral_orange"))
+    addEntity(lander)
+    addEntity(probe)
+    addEntity(Mineral(2, 5, "mineral_blue"))
+    addEntity(Mineral(22, 13, "mineral_orange"))
     
     -- sort entities by y value
     table.sort(entities, function(a,b) return a.y < b.y end)
@@ -95,13 +124,16 @@ function state_ingame:enter()
     }
     
     show_menu = false
-    research_enabled = true
+    research_enabled = false
+    solar_panel_extended = false
+    allow_solarpanels = false
+    buildmode = nil
 end
 
 
 function state_ingame:update(dt)
     updateParameters()
-    cycleEntities(false)
+    if not buildmode then cycleEntities(false) end
     for i,entity in pairs(entities) do
         entity:update(dt)
     end
@@ -111,37 +143,17 @@ function state_ingame:update(dt)
     taskHandler.update(dt)
     
     -- research bar
-    if research_enabled then
-        gui.group.push{grow = "down", pos = {screen.w / 2 - 160, 0}}
-        
-        if gui.Button{ text = "Lander Action"} then
-            show_menu = not show_menu
-        end
-        
-        -- level 1 research
-        if show_menu then
-            
-            local research = dayHandler.getResearch()
-            for i,row in ipairs(research) do
-                gui.group.push{grow = "right", pos = {-75, 0}}
-                
-                for j,entry in ipairs(row) do
-                    if gui.Button{ id=entry.id, text = entry.name} then
-                        -- research action
-                    end
-                end
-                
-                gui.group.pop{}
+    if research_enabled and not buildmode and not probe.sample then
+        gui.group.push{grow = "down", pos = {30, screen.h - 30}}
+        if not solar_panel_extended and stat.minerals >= 2 and not lander.solar then 
+            if gui.Button{text="Solar Array"} then
+                lander:action("solar")
             end
-            gui.group.pop{}
-            
-            local mx, my = love.mouse.getPosition()
-            for i,row in ipairs(research) do
-                for j,entry in ipairs(row) do
-                    if gui.mouse.isHot(entry.id) then
-                        gui.Label{text = entry.desc, pos = {mx + 10,my - 20}}
-                    end
-                end
+        end
+        if allow_solarpanels and stat.minerals >= 3 then
+            if gui.Button{text="Solar Panel"} then
+                buildmode = Solarpanel(-1,-1)
+                stat.minerals = stat.minerals - 3
             end
         end
     end
@@ -187,10 +199,15 @@ function state_ingame:draw()
     love.graphics.translate( screen.w / translate.x,  screen.h / translate.y)
     
     love.graphics.setColor(color.black)
-    for i=0,30 do
-        for j=0,15 do
-            --love.graphics.rectangle("line", i * scale.tw, j * scale.th, scale.tw, scale.th)
-        end
+    if buildmode then
+        local x,y = love.mouse.getPosition()
+        x = x - (screen.w / translate.x)
+        y = y - (screen.h / translate.y)
+        x = math.floor(x / scale.tw)
+        y = math.floor(y / scale.th)
+        love.graphics.setColor(color.red)
+        if tilegrid[x] and tilegrid[x][y] then love.graphics.setColor(color.selected) end
+        love.graphics.rectangle("fill", x * scale.tw,y * scale.th, scale.tw, scale.th)
     end
     
     for i,entity in pairs(entities) do
@@ -201,5 +218,18 @@ function state_ingame:draw()
 end
 
 function state_ingame:mousepressed( x, y, button )
-    if button == "l" or button == "r" then cycleEntities(button) end
+    if button == "l" then
+        if buildmode then 
+            x = x - (screen.w / translate.x)
+            y = y - (screen.h / translate.y)
+            buildmode.x = math.floor(x / scale.tw)
+            buildmode.y = math.floor(y / scale.th)
+            if addEntity(buildmode) then
+                buildmode:action()
+            end
+            buildmode = nil
+        else
+            cycleEntities(button)
+        end
+    end
 end
