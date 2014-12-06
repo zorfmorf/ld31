@@ -75,12 +75,22 @@ function state_ingame:enter()
     entities = {}
     table.insert(entities, lander)
     table.insert(entities, probe)
-    table.insert(entities, Mineral(2, 5, 1))
-    table.insert(entities, Mineral(26, 6, 1))
-    table.insert(entities, Mineral(22, 13, 2))
+    table.insert(entities, Mineral(2, 5, "mineral_blue"))
+    table.insert(entities, Mineral(22, 13, "mineral_orange"))
     
     -- sort entities by y value
     table.sort(entities, function(a,b) return a.y < b.y end)
+    
+    taskHandler.init()
+    
+    -- ressources
+    stat = {
+        science = 0,
+        minerals = 0,
+        energy = 10,
+        energypd = 2,
+        day = 1
+    }
 end
 
 
@@ -92,6 +102,39 @@ function state_ingame:update(dt)
     end
     -- sort entities by y value
     table.sort(entities, function(a,b) return a.y < b.y end)
+    
+    taskHandler.update(dt)
+end
+
+local function drawHud()
+    love.graphics.origin()
+    love.graphics.setColor(color.black)
+    love.graphics.setFont(font)
+    
+    if stat.science then 
+        love.graphics.print("Science:", 5, 5)
+        love.graphics.printf(stat.science, 5, 5, 130, "right") 
+    end
+    if stat.minerals then 
+        love.graphics.print("Minerals:", 5, 10 + font:getHeight())
+        love.graphics.printf(stat.minerals, 5, 10 + font:getHeight(), 130, "right") 
+    end
+    if stat.energy then 
+        love.graphics.print("Energy:", 5, 15 + font:getHeight() * 2)
+        love.graphics.printf(stat.energy, 5, 15 + font:getHeight() * 2, 130, "right")
+        love.graphics.printf("-"..stat.energypd, 5, 15 + font:getHeight() * 2, 160, "right")
+    end
+    if DEBUG then love.graphics.print("FPS: "..love.timer.getFPS(), 5, 20 + font:getHeight() * 3) end
+    
+    love.graphics.print("All Graphics are placeholders!", 300, 20)
+    
+    love.graphics.print("Day "..stat.day, screen.w - 300, 5)
+    local list = taskHandler.getTasklist()
+    for i,task in pairs(list) do
+        local line = task.text
+        if task.finished then line = "[x] "..line else line = "[  ] "..line end
+        love.graphics.print(line, screen.w - 300, i * font:getHeight() + 10)
+    end
 end
 
 
@@ -116,6 +159,7 @@ function state_ingame:draw()
         love.graphics.setColor(color.white)
     end
     
+    drawHud()
 end
 
 function state_ingame:mousepressed( x, y, button )

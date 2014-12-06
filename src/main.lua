@@ -11,10 +11,19 @@ require "state.ingame"
 require "class.lander"
 require "class.probe"
 require "class.mineral"
+require "class.task"
+
+-- load misc
+require "misc.taskhandler"
 
 function love.load()
     Gamestate.registerEvents()
     Gamestate.switch(state_ingame)
+    
+    font = love.graphics.newFont("font/Orbitron Medium.ttf", 15)
+    landerfont = love.graphics.newFont("font/Orbitron Medium.ttf", 40)
+    love.graphics.setFont(font)
+    DEBUG = true
 end
 
 
@@ -24,5 +33,5 @@ end
 
 
 function love.draw()
-    
+    love.graphics.print("")
 end
