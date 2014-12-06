@@ -26,28 +26,59 @@ function Lander:finishWork()
     probe.sample = nil
     
     if psample then
-        table.insert(self.texts, 1, {"+1 Minerals", 0})
-        stat.minerals = stat.minerals + 1
+        local effect = dayHandler.getEffect(psample)
+        table.insert(self.texts, 1, {"+"..effect.mineral.." Minerals", 0})
+        stat.minerals = stat.minerals + effect.mineral
         for i,sample in pairs(self.samples) do
-            if psample == sample then return false end
+            if psample == sample then dayHandler.free() return false end
         end
         table.insert(self.samples, psample)
-        table.insert(self.texts, 1, {"New Sample! +10 Science", 0})
-        stat.science = stat.science + 10
+        table.insert(self.texts, 1, {"New Sample! +"..effect.science.." Science", 0})
+        effect.sampled = true
+        stat.science = stat.science + effect.science
+        dayHandler.free()
         return true
     end
     
+    dayHandler.free()
     return false
 end
 
 -- on click event
-function Lander:action()
-    probe:register(self)
-    self.active = true
+function Lander:action(button)
+        
+    -- if probe has mineral deliver it
+    if probe.sample and dayHandler.lock() then
+        probe:register(self)
+        self.active = true
+    else
+       -- if probe doesnt have sample, execute click event 
+        
+    end
 end
 
 function Lander:draw(scale)
-    local img = img1
+    local img = img0
+    
+    -- draw action preview
+    if self.selected and not probe.sample then
+        love.graphics.setColor(color.white)
+        love.graphics.rectangle("fill", self.x * scale.tw + 60, self.y * scale.th - 75, 100, 100)
+        love.graphics.setColor(color.black)
+        love.graphics.rectangle("line", self.x * scale.tw + 60, self.y * scale.th - 75, 100, 100)
+        
+        love.graphics.setColor(color.white)
+        love.graphics.draw(icon_mousel, self.x * scale.tw + 60, self.y * scale.th - 75, 0, scale.x * 0.3, scale.y * 0.3)
+        love.graphics.draw(icon_mouser, self.x * scale.tw + 60, self.y * scale.th - 25, 0, scale.x * 0.3, scale.y * 0.3)
+        love.graphics.setFont(signfont2)
+        love.graphics.setColor(color.black)
+        love.graphics.print("Research", self.x * scale.tw + 100, self.y * scale.th - 75)
+        love.graphics.print("Build", self.x * scale.tw + 100, self.y * scale.th - 25)
+    end
+    
+    -- draw lander
+    love.graphics.setColor(color.white)    
+    if self.selected then love.graphics.setColor(color.selected) end
     love.graphics.draw(img, self.x * scale.tw, self.y * scale.th, 0, scale.x * 0.4, scale.y * 0.4, (img:getWidth() / 2.5), (img:getHeight() / 1.5))
     love.graphics.setFont(landerfont)
     for i,line in ipairs(self.texts) do

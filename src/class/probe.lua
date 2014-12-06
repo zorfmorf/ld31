@@ -68,7 +68,7 @@ function Probe:update(dt)
 end
 
 -- on click event
-function Probe:action()
+function Probe:action(button)
     if not self.feeling then
         self.feelingdt = 1
         self.feeling = feel_happy
@@ -86,9 +86,12 @@ function Probe:register(target)
 end
 
 function Probe:draw(scale)
+    love.graphics.setColor(color.white)
+    if self.selected then love.graphics.setColor(color.selected) end
     love.graphics.draw(img, self.x * scale.tw, self.y * scale.th, 0, scale.x * 0.4, scale.y * 0.4, img:getWidth() / 4, img:getHeight() / 4)
     if self.sample then love.graphics.draw(sample, self.x * scale.tw, self.y * scale.th, 0, scale.x * 0.4, scale.y * 0.4, sample:getWidth() / 4, sample:getHeight() / 4) end
     if self.feeling then
+        love.graphics.setColor(color.white)
         love.graphics.draw(self.feeling, self.x * scale.tw, self.y * scale.th, 0, scale.x * 0.4, scale.y * 0.4, 0, self.feeling:getHeight())
     end
 end

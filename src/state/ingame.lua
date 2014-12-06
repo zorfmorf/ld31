@@ -40,7 +40,7 @@ local function cycleEntities(action)
         if entity.lander then 
             if math.abs(entity.x - x) < 2 and entity.y - y < 3 and entity.y - y > -1 then 
                 if action then 
-                    entity:action()
+                    entity:action(action)
                 else
                     entity.selected = true
                 end
@@ -49,7 +49,7 @@ local function cycleEntities(action)
         
         if math.floor(entity.x + 0.5) == x and math.floor(entity.y + 0.5) == y then 
             if action then 
-                entity:action()
+                entity:action(action)
             else
                 entity.selected = true
             end
@@ -66,11 +66,12 @@ function state_ingame:enter()
     color = {
         white = {255, 255, 255, 255},
         black = {0, 0, 0, 255},
-        selected = {170, 249, 145, 255}
+        selected = {170, 249, 145, 255},
+        red = {166, 90, 93, 255}
     }
     
-    lander = Lander(15, 7)
-    probe = Probe(10, 3)
+    lander = Lander(15, 4)
+    probe = Probe(10, 5)
     
     entities = {}
     table.insert(entities, lander)
@@ -82,13 +83,14 @@ function state_ingame:enter()
     table.sort(entities, function(a,b) return a.y < b.y end)
     
     taskHandler.init()
+    dayHandler.init()
     
     -- ressources
     stat = {
         science = 0,
         minerals = 0,
         energy = 10,
-        energypd = 2,
+        energypd = 0,
         day = 1
     }
 end
@@ -122,7 +124,7 @@ local function drawHud()
     if stat.energy then 
         love.graphics.print("Energy:", 5, 15 + font:getHeight() * 2)
         love.graphics.printf(stat.energy, 5, 15 + font:getHeight() * 2, 130, "right")
-        love.graphics.printf("-"..stat.energypd, 5, 15 + font:getHeight() * 2, 160, "right")
+        love.graphics.printf(stat.energypd, 5, 15 + font:getHeight() * 2, 160, "right")
     end
     if DEBUG then love.graphics.print("FPS: "..love.timer.getFPS(), 5, 20 + font:getHeight() * 3) end
     
@@ -152,16 +154,13 @@ function state_ingame:draw()
         end
     end
     
-    love.graphics.setColor(color.white)
     for i,entity in pairs(entities) do
-        if entity.selected then love.graphics.setColor(color.selected) end
         entity:draw(scale)
-        love.graphics.setColor(color.white)
     end
     
     drawHud()
 end
 
 function state_ingame:mousepressed( x, y, button )
-    if button == "l" then cycleEntities(true) end
+    if button == "l" or button == "r" then cycleEntities(button) end
 end
