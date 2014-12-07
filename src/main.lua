@@ -3,11 +3,12 @@
 Gamestate = require "lib.hump.gamestate"
 Class = require "lib.hump.class"
 Vector = require "lib.vector"
-gui = require "lib.quickie"
 
 -- load states
 require "state.ingame"
 require "state.gameover"
+require "state.intro"
+require "state.space"
 
 -- load classes
 require "class.lander"
@@ -24,7 +25,8 @@ require "misc.dayhandler"
 
 function love.load()
     Gamestate.registerEvents()
-    Gamestate.switch(state_ingame)
+    --Gamestate.switch(state_intro)
+    Gamestate.switch(state_space)
     
     font = love.graphics.newFont("font/Orbitron Medium.ttf", 15)
     landerfont = love.graphics.newFont("font/Orbitron Medium.ttf", 40)
@@ -44,10 +46,6 @@ function love.load()
     
     math.randomseed(os.time())
     
-    -- gui setup defaults
-    gui.group.default.size[1] = 150
-    gui.group.default.size[2] = 25
-    gui.group.default.spacing = 10
 end
 
 
@@ -57,5 +55,5 @@ end
 
 
 function love.draw()
-    love.graphics.print("")
+    
 end

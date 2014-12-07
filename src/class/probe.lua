@@ -27,7 +27,7 @@ end
 
 function Probe:calcMove()
     self.move = Vector:c(self.target.x - self.x, (self.target.y + 0.5) - self.y)
-    if self.move:len() > 1 then self.move = self.move:norm() end
+    self.move = self.move:norm()
 end
 
 function Probe:update(dt)

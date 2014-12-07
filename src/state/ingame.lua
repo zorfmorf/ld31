@@ -3,16 +3,25 @@ state_ingame = Gamestate.new()
 
 local bkg = nil
 
+local mouse = love.graphics.newImage("res/mouse.png")
+
 local entities = nil
 
 local translate = { x = 100, y = 3}
 
+local timesincelastsort = 0
+
 -- we want to allow resizing at all times
-local function updateParameters()
+local function updateParameters(cx, cy)
     screen = {
         w = love.graphics.getWidth(),
         h = love.graphics.getHeight()
     }
+    
+    if cx and cy then
+        screen.w = cx
+        screen.h = cy
+    end
     
     local x = screen.w / bkg:getWidth()
     local y = screen.h / bkg:getHeight()
@@ -28,8 +37,8 @@ end
 -- cycle entities and either highlight them or execute on click action
 local function cycleEntities(action)
     local x,y = love.mouse.getPosition()
-    x = x - (screen.w / translate.x)
-    y = y - (screen.h / translate.y)
+    x = x * scale.x - (screen.w / translate.x)
+    y = y * scale.y - (screen.h / translate.y)
     x = math.floor(x / scale.tw)
     y = math.floor(y / scale.th)
     
@@ -146,19 +155,32 @@ function state_ingame:enter()
 end
 
 
-function state_ingame:update(dt)
-    updateParameters()
+function state_ingame:update(dt, cx, cy)
+    
+    updateParameters(cx, cy)
     if not buildmode then cycleEntities(false) end
     for i,entity in pairs(entities) do
         entity:update(dt)
     end
-    -- sort entities by y value
-    table.sort(entities, function(a,b) return a.y < b.y end)
+    
+    timesincelastsort = timesincelastsort + dt
+    if timesincelastsort > 0.3 then
+        -- sort entities by y value
+        table.sort(entities, function(a,b) return a.y < b.y end)
+        timesincelastsort = 0
+    end
     
     taskHandler.update(dt)
+end
+
+local function drawHud()
     
-    -- research bar
+    love.graphics.origin()
+    love.graphics.setColor(color.black)
+    love.graphics.setFont(font)
+    
     if research_enabled and not buildmode and not probe.sample then
+        --[[
         gui.group.push{grow = "down", pos = {30, screen.h - 30}}
         if not solar_panel_extended and stat.minerals >= 2 and not lander.solar then 
             if gui.Button{text="Solar Array"} then
@@ -176,46 +198,17 @@ function state_ingame:update(dt)
                 stat.minerals = stat.minerals - 3
             end
         end
+        ]]--
     end
 end
 
-local function drawHud()
-    love.graphics.origin()
-    love.graphics.setColor(color.black)
-    love.graphics.setFont(font)
-    
-    --[[
-    
-    if stat.science then 
-        love.graphics.print("Science:", 5, 5)
-        love.graphics.printf(stat.science, 5, 5, 130, "right") 
-    end
-    if stat.minerals then 
-        love.graphics.print("Minerals:", 5, 10 + font:getHeight())
-        love.graphics.printf(stat.minerals, 5, 10 + font:getHeight(), 130, "right") 
-    end
-    if stat.energy then 
-        love.graphics.print("Energy:", 5, 15 + font:getHeight() * 2)
-        love.graphics.printf(stat.energy, 5, 15 + font:getHeight() * 2, 130, "right")
-        love.graphics.printf(stat.energypd, 5, 15 + font:getHeight() * 2, 160, "right")
-    end
-    if DEBUG then love.graphics.print("FPS: "..love.timer.getFPS(), 5, 20 + font:getHeight() * 3) end
-    
-    love.graphics.print("Day "..stat.day, screen.w - 300, 5)
-    local list = taskHandler.getTasklist()
-    for i,task in pairs(list) do
-        local line = task.text
-        if task.finished then line = "[x] "..line else line = "[  ] "..line end
-        love.graphics.print(line, screen.w - 300, i * font:getHeight() + 10)
-    end
-    ]]--
-    
-    gui.core.draw()
-end
 
-
-function state_ingame:draw()
-    love.graphics.setBackgroundColor(color.white)
+function state_ingame:draw(canvas)
+    
+    love.mouse.setVisible(false)
+    
+    love.graphics.setCanvas(canvas)
+    
     love.graphics.setColor(color.white)
     love.graphics.draw(bkg, 0, 0, 0, scale.x, scale.y)
     
@@ -224,8 +217,8 @@ function state_ingame:draw()
     love.graphics.setColor(color.black)
     if buildmode then
         local x,y = love.mouse.getPosition()
-        x = x - (screen.w / translate.x)
-        y = y - (screen.h / translate.y)
+        x = x * scale.x - (screen.w / translate.x)
+        y = y * scale.y - (screen.h / translate.y)
         x = math.floor(x / scale.tw)
         y = math.floor(y / scale.th)
         love.graphics.setColor(color.red)
@@ -238,13 +231,23 @@ function state_ingame:draw()
     end
     
     drawHud()
+    
+    love.graphics.setColor(color.white)
+    local mx, my = love.mouse.getPosition()
+    mx = mx * scale.x
+    my = my * scale.y
+    love.graphics.draw(mouse, mx, my, 0, 0.5, 0.5)
+    
+    love.graphics.setCanvas()
+    
+    return canvas
 end
 
 function state_ingame:mousepressed( x, y, button )
     if button == "l" then
         if buildmode then 
-            x = x - (screen.w / translate.x)
-            y = y - (screen.h / translate.y)
+            x = x * scale.x - (screen.w / translate.x)
+            y = y * scale.y - (screen.h / translate.y)
             buildmode.x = math.floor(x / scale.tw)
             buildmode.y = math.floor(y / scale.th)
             if addEntity(buildmode) then
