@@ -4,6 +4,9 @@ state_ingame = Gamestate.new()
 local bkg = nil
 
 local mouse = love.graphics.newImage("res/mouse.png")
+local plus = love.graphics.newImage("res/plus.png")
+local icon_scanner = love.graphics.newImage("res/icon_scanner.png")
+local icon_panel = love.graphics.newImage("res/icon_panel.png")
 
 local canvas = nil
 
@@ -186,29 +189,48 @@ end
 local function drawHud()
     
     love.graphics.origin()
-    love.graphics.setColor(color.black)
+    love.graphics.setColor(color.white)
     love.graphics.setFont(font)
     
     if research_enabled and not buildmode and not probe.sample then
-        --[[
-        gui.group.push{grow = "down", pos = {30, screen.h - 30}}
+        
+        local mx, my = love.mouse.getPosition()
+        mx = mx * scale.x * mousemod
+        my = my * scale.y
+                
         if not solar_panel_extended and stat.minerals >= 2 and not lander.solar then 
-            if gui.Button{text="Solar Array"} then
-                lander:action("solar")
+            if mx >= 30 and mx <= 30 + plus:getWidth() and my >= screen.h - 5 - plus:getHeight() then
+                love.graphics.setColor(color.black)
+                love.graphics.print("Extend solar panel", 30, screen.h - 5 - plus:getHeight() - font:getHeight() - 5)
+                love.graphics.setColor(color.selected)
             end
+            love.graphics.draw(icon_panel, 30, (screen.h - 5) - plus:getHeight())
         end
+        
+        love.graphics.setColor(color.white)
         if not auspex_built and stat.minerals >= 3 and stat.science > 10 and not lander.auspex then 
-            if gui.Button{text="Auspex"} then
-                lander:action("auspex")
+            if mx >= 40 + plus:getWidth() and mx <= 40 + plus:getWidth() * 2 and 
+                                            my >= screen.h - 5 - plus:getHeight() then
+                love.graphics.setColor(color.black)
+                love.graphics.print("Build scanner", 40 + plus:getWidth(), 
+                                screen.h - 5 - plus:getHeight() - font:getHeight() - 5)
+                love.graphics.setColor(color.selected)
             end
+            love.graphics.draw(icon_scanner, 40 + plus:getWidth(), screen.h - 5 - plus:getHeight())
         end
+        
+        love.graphics.setColor(color.white)
         if allow_solarpanels and stat.minerals >= 3 then
-            if gui.Button{text="Solar Panel"} then
-                buildmode = Solarpanel(-1,-1)
-                stat.minerals = stat.minerals - 3
+            if mx >= 50 + plus:getWidth() * 2 and mx <= 50 + plus:getWidth() * 3 and 
+                                            my >= screen.h - 5 - plus:getHeight() then
+                love.graphics.setColor(color.black)
+                love.graphics.print("Build solar pannel", 50 + plus:getWidth() * 2, 
+                                screen.h - 5 - plus:getHeight() - font:getHeight() - 5)
+                love.graphics.setColor(color.selected)
             end
+            love.graphics.draw(icon_panel, 50 + plus:getWidth() * 2, screen.h - 5 - plus:getHeight())
         end
-        ]]--
+        
     end
 end
 
@@ -241,6 +263,8 @@ function state_ingame:draw()
         entity:draw(scale)
     end
     
+    love.graphics.origin()
+    
     drawHud()
     
     love.graphics.setColor(color.white)
@@ -266,6 +290,27 @@ function state_ingame:mousepressed( x, y, button )
             end
             buildmode = nil
         else
+            local mx = x * scale.x * mousemod
+            local my = y * scale.y
+            
+            if mx >= 30 and mx <= 30 + plus:getWidth() and my >= screen.h - 5 - plus:getHeight() then
+                lander:action("solar")
+                return
+            end
+            
+            if mx >= 40 + plus:getWidth() and mx <= 40 + plus:getWidth() * 2 and 
+                                            my >= screen.h - 5 - plus:getHeight() then
+                lander:action("auspex")
+                return
+            end
+            
+            if mx >= 50 + plus:getWidth() * 2 and mx <= 50 + plus:getWidth() * 3 and 
+                                            my >= screen.h - 5 - plus:getHeight() then
+                buildmode = Solarpanel(-1,-1)
+                stat.minerals = stat.minerals - 3
+                return
+            end
+            
             cycleEntities(button)
         end
     end

@@ -12,7 +12,7 @@ function state_intro:update(dt)
     delta = delta + dt
     
     -- switch to spaceship view after 30 seconds
-    if delta > 100 then
+    if delta > 2 then
         Gamestate.switch(state_space)
     end
     
@@ -30,7 +30,7 @@ function state_intro:draw()
 end
 
 function state_intro:mousepressed( x, y, button )
-    if delta > 3 then
+    if delta > 2 then
         state_ingame:mousepressed( x, y, button )
     end
 end

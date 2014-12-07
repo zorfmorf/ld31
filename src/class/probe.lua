@@ -92,6 +92,6 @@ function Probe:draw(scale)
     if self.sample then love.graphics.draw(sample, self.x * scale.tw, self.y * scale.th, 0, scale.x * 0.4, scale.y * 0.4, sample:getWidth() / 4, sample:getHeight() / 4) end
     if self.feeling then
         love.graphics.setColor(color.white)
-        love.graphics.draw(self.feeling, self.x * scale.tw, self.y * scale.th, 0, scale.x * 0.4, scale.y * 0.4, 0, self.feeling:getHeight())
+        love.graphics.draw(self.feeling, self.x * scale.tw, self.y * scale.th, 0, scale.x * 0.4, scale.y * 0.4, 30, self.feeling:getHeight() / 1.3)
     end
 end
