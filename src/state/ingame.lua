@@ -164,6 +164,7 @@ function state_ingame:enter()
     research_enabled = false
     solar_panel_extended = false
     auspex_built = false
+    solar_panel_built = false
     allow_solarpanels = false
     buildmode = nil
 end

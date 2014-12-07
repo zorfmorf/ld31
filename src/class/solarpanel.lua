@@ -17,6 +17,7 @@ end
 
 function Solarpanel:finishWork()
     dayHandler.free()
+    solar_panel_built = true
     self.built = true
     stat.energypd = stat.energypd + 1
     return true

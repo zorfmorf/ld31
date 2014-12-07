@@ -40,6 +40,7 @@ function Mineral:draw(scale)
     
     -- if selected draw infobox
     if self.selected then
+        --[[
         love.graphics.setColor(color.white)
         love.graphics.rectangle("fill", self.x * scale.tw - 25, self.y * scale.th - 75, 75, 75)
         love.graphics.setColor(color.black)
@@ -54,7 +55,7 @@ function Mineral:draw(scale)
             love.graphics.draw(icon_mineral, self.x * scale.tw - 25, self.y * scale.th - 35, 0, scale.x * 0.3, scale.y * 0.3)
         else
             love.graphics.print("?", self.x * scale.tw, self.y * scale.th - 35)
-        end
+        end]]--
         
         love.graphics.setColor(color.selected)
     end

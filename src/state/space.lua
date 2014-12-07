@@ -77,7 +77,15 @@ function state_space:draw()
 end
 
 function state_space:mousepressed( x, y, button )
-    if screen and screen.w and x < screen.w / 2 then
-        state_ingame:mousepressed( x, y, button )
+    if screen and screen.w then
+        if x < screen.w / 2 then
+            state_ingame:mousepressed( x, y, button )
+        else
+            desktop:mousepressed( x, y, button )
+        end
     end
+end
+
+function state_space:keypressed(key, isrepeat)
+    desktop:keypressed(key, isrepeat)
 end

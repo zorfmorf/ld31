@@ -9,6 +9,7 @@ require "state.ingame"
 require "state.gameover"
 require "state.intro"
 require "state.space"
+require "state.win"
 
 -- load classes
 require "class.lander"
@@ -35,7 +36,8 @@ function love.load()
     
     font = love.graphics.newFont("font/Orbitron Medium.ttf", 15)
     landerfont = love.graphics.newFont("font/Orbitron Medium.ttf", 60)
-    titlefont = love.graphics.newFont("font/Orbitron Medium.ttf", 30)
+    titlefont = love.graphics.newFont("font/LeagueGothic-Regular.otf", 40)
+    workfont = love.graphics.newFont("font/LeagueGothic-Regular.otf", 6)
     signfont = love.graphics.newFont(30)
     signfont2 = love.graphics.newFont(15)
     love.graphics.setFont(font)
