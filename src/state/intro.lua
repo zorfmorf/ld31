@@ -20,7 +20,7 @@ end
 
 function state_intro:draw()
     
-    local canvas = state_ingame:draw()
+    local canvas = state_ingame:draw(delta)
     
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.draw(canvas, 0, 0)

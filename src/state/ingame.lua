@@ -1,12 +1,14 @@
 
 state_ingame = Gamestate.new()
 
-local bkg = nil
+local bkg = love.graphics.newImage("res/bkg.png")
+local bkg_sky = love.graphics.newImage("res/bkg_sky.png")
 
 local mouse = love.graphics.newImage("res/mouse.png")
 local plus = love.graphics.newImage("res/plus.png")
 local icon_scanner = love.graphics.newImage("res/icon_scanner.png")
 local icon_panel = love.graphics.newImage("res/icon_panel.png")
+local sun = love.graphics.newImage("res/sun.png")
 
 local canvas = nil
 
@@ -123,7 +125,6 @@ function state_ingame:changeMouse()
 end
 
 function state_ingame:enter()
-    bkg = love.graphics.newImage("res/bkg.png")
     
     updateParameters()
     
@@ -235,7 +236,8 @@ local function drawHud()
 end
 
 
-function state_ingame:draw()
+function state_ingame:draw(delta)
+    delta = 100
     
     if not canvas or not (canvas:getWidth() == screen.w and canvas:getHeight() == screen.h) then
         canvas = love.graphics.newCanvas(screen.w, screen.h)
@@ -244,7 +246,11 @@ function state_ingame:draw()
     love.mouse.setVisible(false)    
     love.graphics.setCanvas(canvas)
     love.graphics.setColor(color.white)
+    
+    love.graphics.draw(bkg_sky, 0, 0, 0, scale.x, scale.y)
+    love.graphics.draw(sun, screen.w * (1 - 0.2 * math.min(delta / 20, 1)) * scale.x, screen.h * (0.4 - 0.2 * math.min(delta / 20, 1)) * scale.y, 0, scale.x, scale.y, bkg_sky:getWidth() * scale.x * 0.5, bkg_sky:getHeight() * scale.y * 0.5)
     love.graphics.draw(bkg, 0, 0, 0, scale.x, scale.y)
+    
     
     love.graphics.translate( screen.w / translate.x,  screen.h / translate.y)
     love.graphics.setColor(color.black)

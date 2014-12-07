@@ -46,7 +46,7 @@ function state_space:draw()
     local timea = love.timer.getTime( )
     
     love.mouse.setVisible(false)
-    local canvas = state_ingame:draw(canvas)
+    local canvas = state_ingame:draw(100)
     
     love.graphics.setBackgroundColor(0, 4, 13)
     love.graphics.setColor(255, 255, 255, 255)
