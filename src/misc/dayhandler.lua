@@ -49,9 +49,9 @@ function dayHandler.finish()
     -- handle asteroids
     if math.random(100) + math.min(stat.day, 70) > 80 then
         local x = math.random(0,30)
-        local y = math.random(2,15)
+        local y = math.random(6,15)
         if not (x == lander.x and y == lander.y) then
-            addEntity(Asteroid(x, y))
+            --addEntity(Asteroid(x, y))
         end
     end
 end

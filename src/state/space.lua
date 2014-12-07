@@ -9,6 +9,9 @@ state_space = Gamestate.new()
 local canvasx = nil
 local canvasy = nil
 local screen = nil
+local desktop = nil
+
+local workcanvas = nil
 
 local function updateCanvasSize()
     screen = {
@@ -21,7 +24,10 @@ end
 
 function state_space:enter()
     updateCanvasSize()
-    state_ingame:enter()
+    
+    state_ingame:changeMouse()
+    
+    desktop = Desktop()
 end
 
 function state_space:update(dt)
@@ -29,6 +35,7 @@ function state_space:update(dt)
     
     updateCanvasSize()
     state_ingame:update(dt, canvasx, canvasy)
+    desktop:update(dt)
     
     local timeb = love.timer.getTime( )
     --if timeb - timea > 0.05 then print( "update:", timeb - timea ) end
@@ -39,14 +46,22 @@ function state_space:draw()
     local timea = love.timer.getTime( )
     
     love.mouse.setVisible(false)
-    local canvas = love.graphics.newCanvas(canvasx, canvasy)
-    state_ingame:draw(canvas)
+    local canvas = state_ingame:draw(canvas)
     
+    love.graphics.setBackgroundColor(0, 4, 13)
     love.graphics.setColor(255, 255, 255, 255)
     love.graphics.draw(canvas, 37, 97, 0, 1, 1, 0, 0, 0, -0.135)
-    love.graphics.draw(screenone, 0, 0, 0, 0.9, 1)
-    love.graphics.draw(screentwo, screenone:getWidth() * 0.9 + 10, 5, 0, 1, 0.98)
-    love.graphics.draw(workspace, 0, 0)
+    
+    if not workcanvas then
+        workcanvas = love.graphics.newCanvas(screen.w, screen.h)
+        love.graphics.setCanvas(workcanvas)
+        love.graphics.draw(screenone, 0, 0, 0, 0.9, 1)
+        love.graphics.draw(screentwo, screenone:getWidth() * 0.9 + 10, 5, 0, 1, 0.98)
+        love.graphics.draw(workspace, 0, 0)
+        love.graphics.setCanvas()
+    end
+    love.graphics.draw(workcanvas)
+    desktop:draw(screenone:getWidth(), screen)
     love.graphics.draw(mouse, 650 + 50 * love.mouse.getX() / screen.w, 500 + 50 * love.mouse.getY() / screen.h)
     
     local timeb = love.timer.getTime( )

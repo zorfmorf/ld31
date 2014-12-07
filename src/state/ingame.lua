@@ -5,14 +5,20 @@ local bkg = nil
 
 local mouse = love.graphics.newImage("res/mouse.png")
 
+local canvas = nil
+
 local entities = nil
 
 local translate = { x = 100, y = 3}
 
 local timesincelastsort = 0
 
+local mousemod = 1
+
+
 -- we want to allow resizing at all times
 local function updateParameters(cx, cy)
+    
     screen = {
         w = love.graphics.getWidth(),
         h = love.graphics.getHeight()
@@ -37,7 +43,7 @@ end
 -- cycle entities and either highlight them or execute on click action
 local function cycleEntities(action)
     local x,y = love.mouse.getPosition()
-    x = x * scale.x - (screen.w / translate.x)
+    x = x * scale.x * mousemod - (screen.w / translate.x)
     y = y * scale.y - (screen.h / translate.y)
     x = math.floor(x / scale.tw)
     y = math.floor(y / scale.th)
@@ -109,6 +115,10 @@ function addEntity(entity)
 end
 
 
+function state_ingame:changeMouse()
+    mousemod = 2
+end
+
 function state_ingame:enter()
     bkg = love.graphics.newImage("res/bkg.png")
     
@@ -127,9 +137,9 @@ function state_ingame:enter()
     entities = {}
     addEntity(lander)
     addEntity(probe)
-    addEntity(Mineral(2, 9, "mineral_blue"))
-    addEntity(Mineral(22, 13, "mineral_orange"))
-    addEntity(Mineral(12, 11, "mineral_brown"))
+    addEntity(Mineral(3, 9, "mineral_blue"))
+    addEntity(Mineral(27, 7, "mineral_orange"))
+    addEntity(Mineral(18, 11, "mineral_brown"))
     
     -- sort entities by y value
     table.sort(entities, function(a,b) return a.y < b.y end)
@@ -203,21 +213,22 @@ local function drawHud()
 end
 
 
-function state_ingame:draw(canvas)
+function state_ingame:draw()
     
-    love.mouse.setVisible(false)
+    if not canvas or not (canvas:getWidth() == screen.w and canvas:getHeight() == screen.h) then
+        canvas = love.graphics.newCanvas(screen.w, screen.h)
+    end
     
+    love.mouse.setVisible(false)    
     love.graphics.setCanvas(canvas)
-    
     love.graphics.setColor(color.white)
     love.graphics.draw(bkg, 0, 0, 0, scale.x, scale.y)
     
     love.graphics.translate( screen.w / translate.x,  screen.h / translate.y)
-    
     love.graphics.setColor(color.black)
     if buildmode then
         local x,y = love.mouse.getPosition()
-        x = x * scale.x - (screen.w / translate.x)
+        x = x * scale.x * mousemod - (screen.w / translate.x)
         y = y * scale.y - (screen.h / translate.y)
         x = math.floor(x / scale.tw)
         y = math.floor(y / scale.th)
@@ -234,7 +245,7 @@ function state_ingame:draw(canvas)
     
     love.graphics.setColor(color.white)
     local mx, my = love.mouse.getPosition()
-    mx = mx * scale.x
+    mx = mx * scale.x * mousemod
     my = my * scale.y
     love.graphics.draw(mouse, mx, my, 0, 0.5, 0.5)
     
@@ -246,7 +257,7 @@ end
 function state_ingame:mousepressed( x, y, button )
     if button == "l" then
         if buildmode then 
-            x = x * scale.x - (screen.w / translate.x)
+            x = x * scale.x * mousemod - (screen.w / translate.x)
             y = y * scale.y - (screen.h / translate.y)
             buildmode.x = math.floor(x / scale.tw)
             buildmode.y = math.floor(y / scale.th)

@@ -19,14 +19,15 @@ require "class.effect"
 require "class.solarpanel"
 require "class.asteroid"
 
+require "class.desktop"
+
 -- load misc
 require "misc.taskhandler"
 require "misc.dayhandler"
 
 function love.load()
     Gamestate.registerEvents()
-    --Gamestate.switch(state_intro)
-    Gamestate.switch(state_space)
+    Gamestate.switch(state_intro)
     
     font = love.graphics.newFont("font/Orbitron Medium.ttf", 15)
     landerfont = love.graphics.newFont("font/Orbitron Medium.ttf", 40)

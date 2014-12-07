@@ -83,10 +83,10 @@ function Lander:draw(scale)
     love.graphics.setColor(color.white)    
     if self.selected and probe.sample then love.graphics.setColor(color.selected) end
     love.graphics.draw(lander, self.x * scale.tw, self.y * scale.th, 0, scale.x * 0.4, scale.y * 0.4, (lander:getWidth() / 2.5), (lander:getHeight() / 1.5))
-    if solar_panel_extended then
+    if not solar_panel_extended then
         love.graphics.draw(solar, self.x * scale.tw, self.y * scale.th, 0, scale.x * 0.4, scale.y * 0.4, (solar:getWidth() / 2.5), (solar:getHeight() / 1.5))
     end
-    if auspex_built then
+    if not auspex_built then
         love.graphics.draw(auspex, self.x * scale.tw, self.y * scale.th, 0, scale.x * 0.4, scale.y * 0.4, (auspex:getWidth() / 2.5), (auspex:getHeight() / 1.5))
     end
     
