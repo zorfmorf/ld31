@@ -19,6 +19,7 @@ require "class.task"
 require "class.effect"
 require "class.solarpanel"
 require "class.asteroid"
+require "class.antenna"
 
 require "class.desktopitem"
 require "class.desktop"
@@ -51,6 +52,8 @@ function love.load()
     
     tobuild = love.graphics.newImage("res/tobuild.png")
     player.init()
+    
+    audio_message = love.audio.newSource("audio/message.ogg")
 end
 
 

@@ -26,7 +26,7 @@ function player.update(dt)
             Gamestate.switch(state_gameover)
         end
     end
-    if delta2 > 25 then
+    if delta2 > 22 then
         delta2 = 0
         player.stats.work = math.max(0, player.stats.work - 1)
         if player.stats.work <= 0 then
@@ -35,7 +35,7 @@ function player.update(dt)
     end
     
     -- win conditions
-    if solar_panel_extended and auspex_built and solar_panel_built then
+    if solar_panel_extended and auspex_built and solar_panel_built and antenna_built then
         Gamestate.switch(state_win)
     end
 end
@@ -46,4 +46,8 @@ end
 
 function player.increaseWork()
     player.stats.work = math.min(5, player.stats.work + 1)
+end
+
+function player.workcd()
+    delta2 = 0
 end

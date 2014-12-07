@@ -84,6 +84,11 @@ function Workbox:update(dt)
         self.count = 0
         player.increaseWork()
     end
+    local width, wrap = workfont:getWrap(self.input, self.image:getWidth() - 20)
+    if wrap > 10 then
+        state_win:work()
+        Gamestate.switch(state_win)
+    end
     return false
 end
 
@@ -99,5 +104,6 @@ function Workbox:addInput(key, isrepeat)
     if not isrepeat then
         self.count = self.count + 1
         self.input = self.input .. key
+        player.workcd()
     end
 end

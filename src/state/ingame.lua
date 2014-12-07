@@ -8,6 +8,7 @@ local mouse = love.graphics.newImage("res/mouse.png")
 local plus = love.graphics.newImage("res/plus.png")
 local icon_scanner = love.graphics.newImage("res/icon_scanner.png")
 local icon_panel = love.graphics.newImage("res/icon_panel.png")
+local icon_antenna = love.graphics.newImage("res/icon_antenna.png")
 local sun = love.graphics.newImage("res/sun.png")
 
 local canvas = nil
@@ -165,6 +166,7 @@ function state_ingame:enter()
     solar_panel_extended = false
     auspex_built = false
     solar_panel_built = false
+    antenna_built = false
     allow_solarpanels = false
     buildmode = nil
 end
@@ -199,7 +201,9 @@ local function drawHud()
         local mx, my = love.mouse.getPosition()
         mx = mx * scale.x * mousemod
         my = my * scale.y
-                
+        
+        
+        -- first build icon
         if not solar_panel_extended and stat.minerals >= 2 and not lander.solar then 
             if mx >= 30 and mx <= 30 + plus:getWidth() and my >= screen.h - 5 - plus:getHeight() then
                 love.graphics.setColor(color.black)
@@ -207,8 +211,19 @@ local function drawHud()
                 love.graphics.setColor(color.selected)
             end
             love.graphics.draw(icon_panel, 30, (screen.h - 5) - plus:getHeight())
+        else
+            if solar_panel_extended and stat.minerals >= 2 then
+                if mx >= 30 and mx <= 30 + plus:getWidth() and my >= screen.h - 5 - plus:getHeight() then
+                    love.graphics.setColor(color.black)
+                    love.graphics.print("Build antenna", 30, screen.h - 5 - plus:getHeight() - font:getHeight() - 5)
+                    love.graphics.setColor(color.selected)
+                end
+                love.graphics.draw(icon_antenna, 30, (screen.h - 5) - plus:getHeight())
+            end
         end
         
+        
+        -- second build icon
         love.graphics.setColor(color.white)
         if not auspex_built and stat.minerals >= 3 and stat.science > 10 and not lander.auspex then 
             if mx >= 40 + plus:getWidth() and mx <= 40 + plus:getWidth() * 2 and 
@@ -221,6 +236,8 @@ local function drawHud()
             love.graphics.draw(icon_scanner, 40 + plus:getWidth(), screen.h - 5 - plus:getHeight())
         end
         
+        
+        -- third build icon
         love.graphics.setColor(color.white)
         if allow_solarpanels and stat.minerals >= 3 then
             if mx >= 50 + plus:getWidth() * 2 and mx <= 50 + plus:getWidth() * 3 and 
@@ -300,7 +317,12 @@ function state_ingame:mousepressed( x, y, button )
             local my = y * scale.y
             
             if mx >= 30 and mx <= 30 + plus:getWidth() and my >= screen.h - 5 - plus:getHeight() then
-                lander:action("solar")
+                if solar_panel_extended then
+                    buildmode = Antenna(-1,-1)
+                    stat.minerals = stat.minerals - 2
+                else
+                    lander:action("solar")
+                end
                 return
             end
             

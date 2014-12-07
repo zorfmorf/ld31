@@ -2,6 +2,8 @@ local lander = love.graphics.newImage("res/lander.png")
 local solar = love.graphics.newImage("res/lander_solar.png")
 local auspex = love.graphics.newImage("res/lander_auspex.png")
 
+local workimg = love.graphics.newImage("res/work.png")
+
 
 state_win = Gamestate.new()
 
@@ -11,11 +13,17 @@ local worktext = "You won!\n\nEnding: Wörk, wörk!"
 
 local dtv = 0
 
+local work = false
+
+function state_win:work()
+    work = true
+end
+
 function state_win:enter()
     
     reason = solartext
     -- todo: hook up wörk ending
-    if false then
+    if work then
         reason = worktext
     end
     
@@ -39,7 +47,9 @@ function state_win:draw()
     if dtv > 4 then
         
         love.graphics.setColor(255, 255, 255, 255)
-        if reason == solartext then
+        if work then
+            love.graphics.draw(workimg, screen.w / 2, screen.h / 6, 0, 1, 1, workimg:getWidth())
+        else
             love.graphics.draw(lander, screen.w / 2, screen.h / 6, 0, 1, 1, lander:getWidth())
             love.graphics.draw(solar, screen.w / 2, screen.h / 6, 0, 1, 1, lander:getWidth())
             love.graphics.draw(auspex, screen.w / 2, screen.h / 6, 0, 1, 1, lander:getWidth())
