@@ -29,6 +29,7 @@ end
 function dayHandler.lock()
     if not lock then
         lock = true
+        player.increaseMood()
         return true
     end
     return false

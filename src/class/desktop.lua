@@ -11,18 +11,36 @@ Desktop = Class {
             h = 364
         }
         self.screen = screen
+        
+        self.items = {}
+        table.insert(self.items, Desktopitem(120, 120, message))
+        table.insert(self.items, Chatbox(170, 200, message, "Boss: Your assignment is overdue!\nBoss: Please send it immediately!"))
     end
 }
+
+-- returns the mouse position on the second screen
+local function getMousePosition()
+    local mx,my = love.mouse.getPosition()
+    my = (my / self.screen.h) * (self.monitor.h - 8)
+    if mx <= self.screen.w / 2 then return 0, my end
+    mx = ((mx - self.screen.w / 2) / (self.screen.w / 2)) * self.monitor.w
+    return mx, my
+end
 
 
 function Desktop:update(dt)
     self.dt = self.dt + dt
+    for i,item in ipairs(self.items) do
+        
+    end
 end
 
 
 function Desktop:draw()
     
-    --love.graphics.rectangle("fill", self.monitor.x, self.monitor.y, self.monitor.w, self.monitor.h)
+    for i,item in ipairs(self.items) do
+        if item.visible then item:draw(self.monitor.x + item.x, self.monitor.y + item.y) end
+    end
     
     -- last: draw mouse pointer if it is on the second screen
     local mx,my = love.mouse.getPosition()

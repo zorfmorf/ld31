@@ -4,6 +4,15 @@ local screentwo = love.graphics.newImage("res/screen2.png")
 local workspace = love.graphics.newImage("res/workspace.png")
 local mouse = love.graphics.newImage("res/mouse2.png")
 
+local moods = {}
+moods[0] = love.graphics.newImage("res/mood1.png")
+moods[1] = love.graphics.newImage("res/mood2.png")
+moods[2] = love.graphics.newImage("res/mood2.png")
+moods[3] = love.graphics.newImage("res/mood3.png")
+moods[4] = love.graphics.newImage("res/mood4.png")
+moods[5] = love.graphics.newImage("res/mood5.png")
+
+
 state_space = Gamestate.new()
 
 local canvasx = nil
@@ -24,7 +33,7 @@ end
 
 function state_space:enter()
     updateCanvasSize()
-    
+        
     state_ingame:changeMouse()
     
     desktop = Desktop(screenone:getWidth(), screen)
@@ -37,8 +46,7 @@ function state_space:update(dt)
     state_ingame:update(dt, canvasx, canvasy)
     desktop:update(dt)
     
-    local timeb = love.timer.getTime( )
-    --if timeb - timea > 0.05 then print( "update:", timeb - timea ) end
+    player.update(dt)
 end
 
 function state_space:draw()
@@ -64,8 +72,7 @@ function state_space:draw()
     desktop:draw()
     love.graphics.draw(mouse, 650 + 50 * love.mouse.getX() / screen.w, 500 + 50 * love.mouse.getY() / screen.h)
     
-    local timeb = love.timer.getTime( )
-    if timeb - timea > 0.05 then print( "draw:", timeb - timea ) end
+    love.graphics.draw(moods[player.stats.mood], 270, 500)
     
 end
 

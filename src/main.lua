@@ -19,11 +19,13 @@ require "class.effect"
 require "class.solarpanel"
 require "class.asteroid"
 
+require "class.desktopitem"
 require "class.desktop"
 
 -- load misc
 require "misc.taskhandler"
 require "misc.dayhandler"
+require "misc.player"
 
 function love.load()
     math.randomseed(os.time())
@@ -33,7 +35,7 @@ function love.load()
     
     font = love.graphics.newFont("font/Orbitron Medium.ttf", 15)
     landerfont = love.graphics.newFont("font/Orbitron Medium.ttf", 60)
-    titlefont = love.graphics.newFont("font/Orbitron Medium.ttf", 50)
+    titlefont = love.graphics.newFont("font/Orbitron Medium.ttf", 30)
     signfont = love.graphics.newFont(30)
     signfont2 = love.graphics.newFont(15)
     love.graphics.setFont(font)
@@ -46,7 +48,7 @@ function love.load()
     icon_mouser = love.graphics.newImage("res/icon_mouser.png")
     
     tobuild = love.graphics.newImage("res/tobuild.png")
-    
+    player.init()
 end
 
 

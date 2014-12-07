@@ -237,7 +237,6 @@ end
 
 
 function state_ingame:draw(delta)
-    delta = 100
     
     if not canvas or not (canvas:getWidth() == screen.w and canvas:getHeight() == screen.h) then
         canvas = love.graphics.newCanvas(screen.w, screen.h)
