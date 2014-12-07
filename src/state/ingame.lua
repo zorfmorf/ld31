@@ -64,7 +64,7 @@ function addEntity(entity)
         for i=0,30 do
             tilegrid[i] = {}
             for j=0,15 do
-                tilegrid[i][j] = j > 3
+                tilegrid[i][j] = j > 6
             end
         end
     end
@@ -112,13 +112,13 @@ function state_ingame:enter()
         red = {166, 90, 93, 255}
     }
     
-    lander = Lander(15, 4)
-    probe = Probe(10, 5)
+    lander = Lander(15, 7)
+    probe = Probe(10, 8)
     
     entities = {}
     addEntity(lander)
     addEntity(probe)
-    addEntity(Mineral(2, 5, "mineral_blue"))
+    addEntity(Mineral(2, 9, "mineral_blue"))
     addEntity(Mineral(22, 13, "mineral_orange"))
     addEntity(Mineral(12, 11, "mineral_brown"))
     
@@ -184,6 +184,8 @@ local function drawHud()
     love.graphics.setColor(color.black)
     love.graphics.setFont(font)
     
+    --[[
+    
     if stat.science then 
         love.graphics.print("Science:", 5, 5)
         love.graphics.printf(stat.science, 5, 5, 130, "right") 
@@ -206,6 +208,7 @@ local function drawHud()
         if task.finished then line = "[x] "..line else line = "[  ] "..line end
         love.graphics.print(line, screen.w - 300, i * font:getHeight() + 10)
     end
+    ]]--
     
     gui.core.draw()
 end
