@@ -94,6 +94,6 @@ function Lander:draw(scale)
     love.graphics.setFont(landerfont)
     for i,line in ipairs(self.texts) do
         love.graphics.setColor(0, 0, 0, math.max(0, 255 - line[2] * 100))
-        love.graphics.print(line[1], self.x * scale.tw, self.y * scale.th - line[2] * 5 - i * font:getHeight(), 0, scale.x * 0.4, scale.y * 0.4, lander:getWidth() / 4, lander:getHeight() / 1.5)
+        love.graphics.print(line[1], self.x * scale.tw, self.y * scale.th - line[2] * 5 - i * landerfont:getHeight() * 0.5, 0, scale.x * 0.4, scale.y * 0.4, lander:getWidth() / 4, lander:getHeight() / 1.5)
     end
 end

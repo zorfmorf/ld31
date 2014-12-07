@@ -12,7 +12,7 @@ function state_intro:update(dt)
     delta = delta + dt
     
     -- switch to spaceship view after 30 seconds
-    if delta > 2 then
+    if delta > 1 then
         Gamestate.switch(state_space)
     end
     

@@ -18,8 +18,8 @@ local function updateCanvasSize()
         w = love.graphics.getWidth(),
         h = love.graphics.getHeight(),
     }
-    canvasx = screen.w / 1.92
-    canvasy = screen.h / 2.08
+    canvasx = math.floor(screen.w / 1.92)
+    canvasy = math.floor(screen.h / 2.08)
 end
 
 function state_space:enter()
@@ -27,7 +27,7 @@ function state_space:enter()
     
     state_ingame:changeMouse()
     
-    desktop = Desktop()
+    desktop = Desktop(screenone:getWidth(), screen)
 end
 
 function state_space:update(dt)
@@ -61,7 +61,7 @@ function state_space:draw()
         love.graphics.setCanvas()
     end
     love.graphics.draw(workcanvas)
-    desktop:draw(screenone:getWidth(), screen)
+    desktop:draw()
     love.graphics.draw(mouse, 650 + 50 * love.mouse.getX() / screen.w, 500 + 50 * love.mouse.getY() / screen.h)
     
     local timeb = love.timer.getTime( )

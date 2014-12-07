@@ -26,11 +26,13 @@ require "misc.taskhandler"
 require "misc.dayhandler"
 
 function love.load()
+    math.randomseed(os.time())
+    
     Gamestate.registerEvents()
     Gamestate.switch(state_intro)
     
     font = love.graphics.newFont("font/Orbitron Medium.ttf", 15)
-    landerfont = love.graphics.newFont("font/Orbitron Medium.ttf", 40)
+    landerfont = love.graphics.newFont("font/Orbitron Medium.ttf", 60)
     titlefont = love.graphics.newFont("font/Orbitron Medium.ttf", 50)
     signfont = love.graphics.newFont(30)
     signfont2 = love.graphics.newFont(15)
@@ -44,8 +46,6 @@ function love.load()
     icon_mouser = love.graphics.newImage("res/icon_mouser.png")
     
     tobuild = love.graphics.newImage("res/tobuild.png")
-    
-    math.randomseed(os.time())
     
 end
 
