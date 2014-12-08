@@ -46,6 +46,7 @@ function Chatbox:update(dt)
     if self.work > player.stats.work then
         self.work = player.stats.work
         self.current = self.messages[self.work]
+        audio_message:play()
         return true
     end
     
@@ -85,7 +86,7 @@ function Workbox:update(dt)
         player.increaseWork()
     end
     local width, wrap = workfont:getWrap(self.input, self.image:getWidth() - 20)
-    if wrap > 10 then
+    if wrap > 14 then
         state_win:work()
         Gamestate.switch(state_win)
     end
@@ -104,6 +105,7 @@ function Workbox:addInput(key, isrepeat)
     if not isrepeat then
         self.count = self.count + 1
         self.input = self.input .. key
+        if math.random(1, 10) == 10 then self.input = self.input .. " " end
         player.workcd()
     end
 end

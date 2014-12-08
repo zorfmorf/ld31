@@ -25,7 +25,7 @@ end
 
 -- on click event
 function Solarpanel:action(button)
-    if buildmode and dayHandler.lock() then 
+    if buildmode and not self.built then 
         probe:register(self)
         stat.energy = stat.energy - 1
         self.active = true

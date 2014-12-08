@@ -53,7 +53,14 @@ function love.load()
     tobuild = love.graphics.newImage("res/tobuild.png")
     player.init()
     
+    love.audio.setVolume( 0.5 )
     audio_message = love.audio.newSource("audio/message.ogg")
+    audio_noise = love.audio.newSource("audio/noise.ogg")
+    audio_sonar = love.audio.newSource("audio/sonar.ogg")
+    audio_click = love.audio.newSource("audio/click.ogg")
+    audio_music = love.audio.newSource("audio/music.ogg")
+    audio_music:setLooping(true)
+    audio_processed = love.audio.newSource("audio/processed.ogg")
 end
 
 

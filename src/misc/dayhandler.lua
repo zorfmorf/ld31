@@ -30,6 +30,7 @@ function dayHandler.lock()
     if not lock then
         lock = true
         player.increaseMood()
+        audio_click:play()
         return true
     end
     return false

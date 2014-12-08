@@ -2,14 +2,22 @@
 state_intro = Gamestate.new()
 
 local delta = 0
+local soundplayed = false
 
 function state_intro:enter()
     state_ingame:enter()
+    soundplayed = false
 end
 
 function state_intro:update(dt)
     state_ingame:update(dt)
     delta = delta + dt
+    
+    
+    if delta > 32 and not soundplayed then
+        soundplayed = true
+        audio_message:play()
+    end
     
     -- switch to spaceship view after 35 seconds
     if delta > 35 then

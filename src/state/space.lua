@@ -87,5 +87,10 @@ function state_space:mousepressed( x, y, button )
 end
 
 function state_space:keypressed(key, isrepeat)
-    desktop:keypressed(key, isrepeat)
+    local x = love.mouse.getX()
+    if screen and screen.w then
+        if x >= screen.w / 2 then
+            desktop:keypressed(key, isrepeat)
+        end
+    end
 end

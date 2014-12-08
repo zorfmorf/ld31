@@ -21,6 +21,8 @@ end
 
 function state_win:enter()
     
+    audio_music:play()
+    
     reason = solartext
     -- todo: hook up wörk ending
     if work then

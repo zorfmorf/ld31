@@ -317,7 +317,7 @@ function state_ingame:mousepressed( x, y, button )
             local my = y * scale.y
             
             if mx >= 30 and mx <= 30 + plus:getWidth() and my >= screen.h - 5 - plus:getHeight() then
-                if solar_panel_extended then
+                if solar_panel_extended and dayHandler.lock() then
                     buildmode = Antenna(-1,-1)
                     stat.minerals = stat.minerals - 2
                 else
@@ -334,8 +334,10 @@ function state_ingame:mousepressed( x, y, button )
             
             if mx >= 50 + plus:getWidth() * 2 and mx <= 50 + plus:getWidth() * 3 and 
                                             my >= screen.h - 5 - plus:getHeight() then
-                buildmode = Solarpanel(-1,-1)
-                stat.minerals = stat.minerals - 3
+                if dayHandler.lock() then
+                    buildmode = Solarpanel(-1,-1)
+                    stat.minerals = stat.minerals - 3
+                end
                 return
             end
             

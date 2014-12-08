@@ -27,6 +27,7 @@ function Lander:finishWork()
     probe.sample = nil
     
     if psample then
+        audio_processed:play()
         local effect = dayHandler.getEffect(psample)
         table.insert(self.texts, 1, {"+"..effect.mineral.." Minerals", 0})
         stat.minerals = stat.minerals + effect.mineral
@@ -49,6 +50,7 @@ function Lander:finishWork()
     
     if self.auspex then
         auspex_built = true
+        audio_sonar:play()
         self.auspex = nil
     end
     

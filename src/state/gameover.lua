@@ -5,11 +5,13 @@ local dtv = 0
 local reason = nil
 
 function state_gameover:enter()
+    
+    audio_music:play()
 
-    reason = "Game Over\n\nYou are depressed...\n\n(Pay attention to the mood bar under the left monitor and play the space game to improve mood)"
+    reason = "Game Over\n\nYour boss is happy, but you are depressed. There is more to life than work!\n\n(Pay attention to the mood bar under the left monitor and play the space game to improve mood)"
     
     if player.stats.work <= 0 then
-        reason = "Game Over\n\nYour boss has lost his patience...\n\n(Open the work application and type something to keep him happy)"
+        reason = "Game Over\n\nYour boss has lost his patience...\n\n(Next time, open work application and type something to keep him happy)"
     end
 end
 

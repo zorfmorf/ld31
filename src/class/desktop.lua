@@ -65,16 +65,18 @@ end
 
 function Desktop:mousepressed( x, y, button )
     if button == "l" then
+        --audio_click:play()
         for i=#self.items,1,-1 do
             local item = self.items[i]
             
             local mx, my = self:getMousePosition()
             
-            if i < #self.items 
-                    and mx >= item.x and mx < item.x + item.image:getWidth()
-                    and my >= item.y and my < item.y + item.image:getHeight() then
+            if mx >= item.x and mx < item.x + item.image:getWidth() and
+               my >= item.y and my < item.y + item.image:getHeight() then
+                
                 table.remove(self.items, i)
                 table.insert(self.items, item)
+                audio_click:play()
                 return
             end
         end
