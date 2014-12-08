@@ -212,7 +212,7 @@ local function drawHud()
             end
             love.graphics.draw(icon_panel, 30, (screen.h - 5) - plus:getHeight())
         else
-            if solar_panel_extended and stat.minerals >= 2 then
+            if solar_panel_extended and stat.minerals >= 3 then
                 if mx >= 30 and mx <= 30 + plus:getWidth() and my >= screen.h - 5 - plus:getHeight() then
                     love.graphics.setColor(color.black)
                     love.graphics.print("Build antenna", 30, screen.h - 5 - plus:getHeight() - font:getHeight() - 5)
@@ -310,6 +310,9 @@ function state_ingame:mousepressed( x, y, button )
             buildmode.y = math.floor(y / scale.th)
             if addEntity(buildmode) then
                 buildmode:action()
+            else
+                stat.minerals = stat.minerals + 3
+                dayHandler.free()
             end
             buildmode = nil
         else
@@ -319,7 +322,7 @@ function state_ingame:mousepressed( x, y, button )
             if mx >= 30 and mx <= 30 + plus:getWidth() and my >= screen.h - 5 - plus:getHeight() then
                 if solar_panel_extended and dayHandler.lock() then
                     buildmode = Antenna(-1,-1)
-                    stat.minerals = stat.minerals - 2
+                    stat.minerals = stat.minerals - 3
                 else
                     lander:action("solar")
                 end
